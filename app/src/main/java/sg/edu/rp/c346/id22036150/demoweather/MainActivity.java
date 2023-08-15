@@ -15,12 +15,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import cz.msebera.android.httpclient.entity.mime.Header;
+import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
     ListView lvWeather;
     AsyncHttpClient client;
+    WeatherAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
             String forecast;
 
             @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
                 try {
                     JSONArray jsonArrItems = response.getJSONArray("items");
                     JSONObject firstObj = jsonArrItems.getJSONObject(0);
@@ -52,17 +54,15 @@ public class MainActivity extends AppCompatActivity {
                         Weather weather = new Weather(area, forecast);
                         alWeather.add(weather);
                     }
-                    ArrayAdapter<Weather> adapter = new ArrayAdapter<Weather>(MainActivity.this, android.R.layout.simple_list_item_1, alWeather);
-                    lvWeather.setAdapter(adapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 //POINT X – Code to display List View
-                ArrayAdapter<Weather> adapter = new ArrayAdapter<Weather>(MainActivity.this, android.R.layout.simple_list_item_1, alWeather);
+                //ArrayAdapter<Weather> adapter = new ArrayAdapter<Weather>(MainActivity.this, android.R.layout.simple_list_item_1, alWeather);
+                adapter = new WeatherAdapter(MainActivity.this, R.layout.row, alWeather);
                 lvWeather.setAdapter(adapter);
 
-            }//end onSuccess
-
+            }
         });
     }//end onResume
 
